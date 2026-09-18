@@ -1,17 +1,21 @@
 package POM;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import javax.swing.*;
 import java.time.Duration;
 
 public class LoginPageObjectModel {
     final private WebDriver driver;
     final private WebDriverWait wait;
 
+    private final By logoTextBy = By.className("login_logo");
     private final By loginFieldBy = By.id("user-name");
     private final By passwordFieldBy = By.id("password");
     private final By loginButtonBy = By.id("login-button");
@@ -35,6 +39,19 @@ public class LoginPageObjectModel {
         driver.findElement(loginButtonBy).click();
     }
 
+    public void loginUserWithEnterKey(String username, String password) {
+        driver.findElement(loginFieldBy).sendKeys(username);
+        driver.findElement(passwordFieldBy).sendKeys(password + Keys.ENTER);
+    }
+
+    public void loginUserWithLoginButtonDoubleClicked(String username, String password) {
+        driver.findElement(loginFieldBy).sendKeys(username);
+        driver.findElement(passwordFieldBy).sendKeys(password);
+        new Actions(driver)
+                .doubleClick(driver.findElement(loginButtonBy))
+                .perform();
+    }
+
     public void clearUsernameAndPasswordFields() {
         driver.findElement(loginFieldBy).clear();
         driver.findElement(passwordFieldBy).clear();
@@ -54,5 +71,9 @@ public class LoginPageObjectModel {
 
     public void waitForInventoryPageToLoad() {
         wait.until(ExpectedConditions.urlToBe("https://www.saucedemo.com/inventory.html"));
+    }
+
+    public String getLogoText() {
+        return driver.findElement(logoTextBy).getText();
     }
 }
